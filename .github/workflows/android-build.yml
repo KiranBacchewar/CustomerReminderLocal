@@ -1,0 +1,60 @@
+name: Android Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          build-tools: 34.0.0
+          components: |
+            build-tools;34.0.0
+            platform-tools
+            platforms;android-34
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/settings.gradle') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Download Gradle
+        run: |
+          curl -L https://services.gradle.org/distributions/gradle-8.3.2-bin.zip -o gradle.zip
+          unzip -q gradle.zip
+          chmod +x gradle-8.3.2/bin/gradle
+
+      - name: Build app
+        run: |
+          ./gradle-8.3.2/bin/gradle clean assembleDebug --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: customer-reminder-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
