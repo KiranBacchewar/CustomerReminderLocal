@@ -53,13 +53,13 @@ jobs:
 
       - name: Download Gradle
         run: |
-          curl -L https://services.gradle.org/distributions/gradle-8.3.2-bin.zip -o gradle.zip
+          curl -L https://services.gradle.org/distributions/gradle-8.6-bin.zip -o gradle.zip
           unzip -q gradle.zip
-          chmod +x gradle-8.3.2/bin/gradle
+          chmod +x gradle-8.6/bin/gradle
 
       - name: Build app
         run: |
-          ./gradle-8.3.2/bin/gradle clean assembleDebug --no-daemon
+          ./gradle-8.6/bin/gradle clean assembleDebug --no-daemon
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
