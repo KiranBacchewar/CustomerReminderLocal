@@ -16,7 +16,6 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
       ANDROID_HOME: /usr/local/lib/android/sdk
-      PATH: /usr/local/lib/android/sdk/cmdline-tools/latest/bin:/usr/local/lib/android/sdk/platform-tools:${{ env.PATH }}
 
     steps:
       - name: Checkout repository
