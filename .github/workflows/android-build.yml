@@ -37,8 +37,16 @@ jobs:
             echo "sdkmanager not found at $SDK_MANAGER"
             exit 1
           fi
-          yes | "$SDK_MANAGER" --licenses
-          yes | "$SDK_MANAGER" "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+          yes | "$SDK_MANAGER" --sdk_root="$SDK_ROOT" --licenses >/tmp/sdkmanager-licenses.log 2>&1
+          if [ $? -ne 0 ]; then
+            tail -n 80 /tmp/sdkmanager-licenses.log
+            exit 1
+          fi
+          yes | "$SDK_MANAGER" --sdk_root="$SDK_ROOT" "platform-tools" "build-tools;34.0.0" "platforms;android-34" >/tmp/sdkmanager-install.log 2>&1
+          if [ $? -ne 0 ]; then
+            tail -n 80 /tmp/sdkmanager-install.log
+            exit 1
+          fi
           chmod -R a+rX "$SDK_ROOT"
 
       - name: Cache Gradle dependencies
